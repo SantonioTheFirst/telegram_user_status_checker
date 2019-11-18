@@ -4,8 +4,8 @@ from datetime import datetime
 import time
 from numbers import *
 
-api_id = 1092859
-api_hash = "c7a3757be7d80a9d012096f20d8ad198"
+api_id = 
+api_hash = ""
 
 client = TelegramClient("ananas4", api_id, api_hash)
 
