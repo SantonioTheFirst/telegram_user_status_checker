@@ -1,6 +1,7 @@
 __pycache__
-__pycache__/
 *.session*
-numbers.py
+phone_numbers.py
 ONLINE*.*
 online.*
+.ipynb*
+*.csv

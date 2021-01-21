@@ -2,61 +2,37 @@ from telethon import TelegramClient
 from telethon import types
 from datetime import datetime
 import time
-from numbers import *
+from phone_numbers import *
 
-api_id =
-api_hash = ""
 
-client = TelegramClient("ananas4", api_id, api_hash)
+client = TelegramClient('check', api_id, api_hash)
 
-async def check():
-    counter = 0
-    f = open('online.csv', 'w')
-    f.write('\tID     \tUSER1     \tUSER2' + '\n')
-    while counter in range(0,500):
-        user_h = await client.get_entity(number1)
-        user_d = await client.get_entity(number2)
-        if isinstance(user_h.status, types.UserStatusOnline):
-            if isinstance(user_d.status, types.UserStatusOnline):
-                print(datetime.time(datetime.now()).strftime("%H:%M:%S"))
-                print(datetime.time(datetime.now()).strftime("%H:%M:%S"))
-                counter += 1
-                print(counter)
-                print('------------------------------------------------')
-                f.write('\t' + str(counter) + '     ' + str(datetime.time(datetime.now()).strftime("%H:%M:%S")) + '     ' + str(datetime.time(datetime.now()).strftime("%H:%M:%S")) + '\n')
-                #print(str(user_h.status.expires.hour + 2) + ':' + str(user_h.status.expires.minute) + ':' + str(user_h.status.expires.second))
-                #print(str(user_d.status.expires.hour + 2) + ':' + str(user_d.status.expires.minute) + ':' + str(user_d.status.expires.second))
-            else:
-                print(datetime.time(datetime.now()).strftime("%H:%M:%S"))
-                #print(str(user_h.status.expires.hour + 2) + ':' + str(user_h.status.expires.minute) + ':' + str(user_h.status.expires.second))
-                print(str(user_d.status.was_online.hour + 2) + ':' + str(user_d.status.was_online.minute) + ':' + str(user_d.status.was_online.second))
-                counter += 1
-                print(counter)
-                print('------------------------------------------------')
-                f.write('\t' + str(counter) + '     ' + str(datetime.time(datetime.now()).strftime("%H:%M:%S")) + '     ' + str(user_d.status.was_online.hour + 2) + ':' + str(user_d.status.was_online.minute) + ':' + str(user_d.status.was_online.second) + '\n')
-        elif isinstance(user_h.status, types.UserStatusOffline):
-            if isinstance(user_d.status, types.UserStatusOnline):
-                print(str(user_h.status.was_online.hour + 2) + ':' + str(user_h.status.was_online.minute) + ':' + str(user_h.status.was_online.second))
-                print(datetime.time(datetime.now()).strftime("%H:%M:%S"))
-                counter += 1
-                print(counter)
-                print('------------------------------------------------')
-                f.write('\t' + str(counter) + '     ' + str(user_h.status.was_online.hour + 2) + ':' + str(user_h.status.was_online.minute) + ':' + str(user_h.status.was_online.second) + '     ' + str(datetime.time(datetime.now()).strftime("%H:%M:%S")) + '\n')
-                #print(str(user_d.status.expires.hour + 2) + ':' + str(user_d.status.expires.minute) + ':' + str(user_d.status.expires.second))
-            else:
-                #print(datetime.time(datetime.now()).strftime("%H:%M:%S"))
-                print('Offline')
-                print(str(user_h.status.was_online.hour + 2) + ':' + str(user_h.status.was_online.minute) + ':' + str(user_h.status.was_online.second))
-                print(str(user_d.status.was_online.hour + 2) + ':' + str(user_d.status.was_online.minute) + ':' + str(user_d.status.was_online.second))
-                print('------------------------------------------------')
-                #counter += 1
-                #f.write('\t' + str(counter) + '     ' + str(user_h.status.was_online.hour + 2) + ':' + str(user_h.status.was_online.minute) + ':' + str(user_h.status.was_online.second) + '     ' + str(user_d.status.was_online.hour + 2) + ':' + str(user_d.status.was_online.minute) + ':' + str(user_d.status.was_online.second) + '\n')
+async def check(count : int):
+    file = open('data.csv', 'w+')
+    file.write('ID;User_1;Was_online_1;User_2;Was_online_2;time\n')
+    for i in range(count):
+        start = datetime.now()
+        user_1 = await client.get_entity(number1)
+        user_2 = await client.get_entity(number2)
+        if isinstance(user_1.status, types.UserStatusOnline):
+            u1 = 1
+            u1_time = datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S+00:00')
         else:
-            print('Some errors may happen...')
-            print('------------------------------------------------')
-        #print(counter)
-        time.sleep(0.5)
-    f.close()
+            u1 = 0
+            u1_time = user_1.status.was_online
+        if isinstance(user_2.status, types.UserStatusOnline):
+            u2 = 1
+            u2_time = datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S+00:00')
+        else:
+            u2 = 0
+            u2_time = user_2.status.was_online
+        file.write('{0};{1};{2};{3};{4};{5}\n'.format(i, u1, u1_time, u2, u2_time, datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S+00:00')))
+        print(i, datetime.now() - start)
+        if i != count - 1:
+            time.sleep(10)
+    file.close()
 
-with client:
-    client.loop.run_until_complete(check())
+
+if __name__ == '__main__':
+    with client:
+        client.loop.run_until_complete(check(10))
