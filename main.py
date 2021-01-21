@@ -2,13 +2,13 @@ from telethon import TelegramClient
 from telethon import types
 from datetime import datetime
 import time
-from phone_numbers import *
+from phone_numbers import * # phone numbers, api_id and api_hash
 
 
 client = TelegramClient('check', api_id, api_hash)
 
 async def check(count : int):
-    file = open('data.csv', 'w+')
+    file = open('data.csv', 'w')
     file.write('ID;User_1;Was_online_1;User_2;Was_online_2;time\n')
     for i in range(count):
         start = datetime.now()
@@ -34,5 +34,6 @@ async def check(count : int):
 
 
 if __name__ == '__main__':
+    count = int(input())
     with client:
-        client.loop.run_until_complete(check(10))
+        client.loop.run_until_complete(check(count))
